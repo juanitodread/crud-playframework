@@ -18,8 +18,9 @@
  */
 package controllers
 
-import play.api.mvc.Controller
-import play.api.mvc.Action
+import play.api._
+import play.api.mvc._
+import org.slf4j.{LoggerFactory, Logger}
 
 /**
  *
@@ -29,10 +30,13 @@ import play.api.mvc.Action
  *
  * Apr 28, 2015
  */
-object Application extends Controller {
+class Application extends Controller {
 
-  def index(name: String) = Action {
-    Ok(s"[${new java.util.Date}]: It works ${name}!")
+  private final val logger: Logger = LoggerFactory.getLogger(classOf[Application])
+
+  def index = Action {
+    logger.info("Serving index page...")
+    Ok(views.html.index("Your new application is ready."))
   }
-  
+
 }
