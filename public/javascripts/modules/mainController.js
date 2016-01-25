@@ -1,9 +1,9 @@
-angular.module("simpleCrudApp", ["ngRoute"])
+angular.module("simpleCrudApp", ["ngRoute", "users"])
     .controller("mainController", MainController)
     .config(function($routeProvider) {
         $routeProvider.when("/users", {
             templateUrl: "/assets/html/users/mainUsers.html",
-            controller: "mainController"
+            controller: "userController"
         });
 
         $routeProvider.when("/products", {

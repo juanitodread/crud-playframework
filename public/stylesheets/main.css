@@ -2,6 +2,10 @@
   margin-top: 60px;
 }
 
+.oddRow {
+    background-color: #dddddd;
+}
+
 footer {
     text-align: center;
 }
