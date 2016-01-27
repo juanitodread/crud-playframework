@@ -1,35 +1,31 @@
 <div ng-controller="createUserController as cuc">
     <h1>Create User</h1>
-
     <form id="CreateUserForm" name="CreateUserForm" class="form-horizontal" role="form"
           ng-submit="">
         <legend class="sm-col-12">Basic Information</legend>
 
         <div class="form-group">
-            <label id="lbl_firstName" for="firstName" class="col-sm-4 control-label">First Name</label>
-
-            <div class="col-sm-8">
-                <input type="text" class="form-control" name="firstName" id="firstName" placeholder=""
-                       ng-model="cuc.user.firstName">
+            <label id="nameLbl" for="name" class="col-sm-2 control-label">Name: </label>
+            <div class="col-sm-10">
+                <input type="text" class="form-control" name="name" id="name" placeholder=""
+                       ng-model="cuc.user.name">
             </div>
         </div>
 
         <div class="form-group">
-            <label id="lbl_lastName" for="lastName" class="col-sm-4 control-label">Last Name</label>
-
-            <div class="col-sm-8">
-                <input type="text" class="form-control" name="lastName" id="lastName" placeholder=""
-                       ng-model="cuc.user.lastName">
+            <label id="ageLbl" for="age" class="col-sm-2 control-label">Age: </label>
+            <div class="col-sm-10">
+                <input type="number" class="form-control" name="age" id="age" placeholder=""
+                       ng-model="cuc.user.age" crud-age max="100" min="3"s>
             </div>
         </div>
-
+        
         <div class="form-group">
-            <label id="lbl_age" for="age" class="col-sm-4 control-label"
-                   is-required="CreateUserForm.age">Age</label>
-
-            <div class="col-sm-8">
-                <input type="number" class="form-control" name="age" id="age"
-                       ng-model="cuc.user.age">
+            <label id="emailLbl" for="email" class="col-sm-2 control-label"
+                   is-required="CreateUserForm.age">Email: </label>
+            <div class="col-sm-10">
+                <input type="text" class="form-control" name="email" id="email"
+                       ng-model="cuc.user.email">
             </div>
         </div>
 
