@@ -1,13 +1,13 @@
 <div ng-controller="userController as usrCtrl">
     <div class="row">
         <div class="col-sm-12">
-            <button class="btn btn-primary btn-lg">
-                Add new user
+            <button class="btn btn-primary btn-lg" ng-click="redirectCreateUser()">
+              Add new user
             </button>
         </div>
     </div>
     <div class="row">
-        <div class="col-sm-8"> 
+        <div class="col-sm-8">
             <h2>List of users</h2>
         </div>
         <div class="col-sm-4">
@@ -16,7 +16,8 @@
                     ng-model="seachUser"/>
         </div>
     </div>
-    <div class="row" ng-repeat="usr in usrCtrl.users | filter:seachUser" ng-class="{oddRow: $index % 2 == 0}"> <!-- add each user here  repeat for each user-->
+    <div class="row" ng-repeat="usr in usrCtrl.users | filter:seachUser"
+         ng-class="{oddRow: $index % 2 == 0}"> <!-- add each user here  repeat for each user-->
         <div class="col-sm-8">
             <h4>{{usr.name}} {{usr.age}} {{usr.email}} {{$index}}</h4>
         </div>

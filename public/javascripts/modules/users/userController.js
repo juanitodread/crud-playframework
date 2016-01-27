@@ -1,7 +1,9 @@
 angular.module("users", [])
        .controller("userController", UserController);
 
-function UserController($scope) {
+function UserController($scope, $location) {
+    $scope.redirectCreateUser = redirectCreateUser;
+
     this.users = [];
     this.users = getAllUsers();
 
@@ -20,6 +22,11 @@ function UserController($scope) {
         }
 
         return users;
+    }
+
+    function redirectCreateUser() {
+        $location.path("/users/create");
+        return;
     }
 
 }
