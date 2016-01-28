@@ -1,4 +1,4 @@
-angular.module("simpleCrudApp", ["ngRoute", "users"])
+angular.module("simpleCrudApp", ["ngRoute", "users", "core"])
     .controller("mainController", MainController)
     .config(function($routeProvider, $locationProvider) {
         $routeProvider.when("/users", {
