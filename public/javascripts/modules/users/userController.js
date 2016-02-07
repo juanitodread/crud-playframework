@@ -8,6 +8,10 @@ function UsersService($http, usersServiceUrl) {
     return request("GET", param);
   }
 
+  function post(data) {
+    return request("POST", null, data);
+  }
+
   function request(verb, param, data) {
     var req = {
       method: verb,
@@ -27,6 +31,10 @@ function UsersService($http, usersServiceUrl) {
   return {
     getUsers: function() {
       return get();
+    },
+
+    saveUser: function(user) {
+      return post(user);
     }
   }
 }
