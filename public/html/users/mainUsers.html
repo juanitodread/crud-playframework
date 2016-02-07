@@ -1,4 +1,4 @@
-<div ng-controller="userController as usrCtrl">
+<div>
     <div class="row">
         <div class="col-sm-12">
             <button class="btn btn-primary btn-lg" ng-click="redirectCreateUser()">
@@ -16,7 +16,13 @@
                     ng-model="seachUser"/>
         </div>
     </div>
-    <div class="row" ng-repeat="usr in usrCtrl.users | filter:seachUser"
+    <div class="row" ng-show="isLoading()">
+        <div class="col-sm-12">
+            <img src="assets/images/progressring.gif" alt="Loading" width="30px" height="30px" />
+            Loading...
+        </div>
+    </div>
+    <div class="row" ng-repeat="usr in users | filter:seachUser"
          ng-class="{oddRow: $index % 2 == 0}"> <!-- add each user here  repeat for each user-->
         <div class="col-sm-8">
             <h4>{{usr.name}} {{usr.age}} {{usr.email}} {{$index}}</h4>

@@ -28,6 +28,7 @@ class MemoryUserDao extends UserDao {
   def find(): List[User] = {
     val users = List(User("1", "Juan", 29, "juan@mail.com"),
                      User("2", "Antonio", 32, "antonio@mail.com"))
+    Thread.sleep(3000)
     users
   }
 }
