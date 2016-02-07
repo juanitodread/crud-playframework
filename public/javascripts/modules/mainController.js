@@ -11,6 +11,11 @@ angular.module("simpleCrudApp", ["ngRoute", "users", "core"])
             controller: "createUserController"
         });
 
+        $routeProvider.when("/users/edit/:id", {
+            templateUrl: "/assets/html/users/editUser.html",
+            controller: "updateUserController"
+        });
+
         $routeProvider.when("/products", {
             templateUrl: "/assets/html/products/mainProducts.html",
             controller: "mainController"

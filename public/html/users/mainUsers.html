@@ -25,15 +25,25 @@
     <div class="row" ng-repeat="usr in users | filter:seachUser"
          ng-class="{oddRow: $index % 2 == 0}"> <!-- add each user here  repeat for each user-->
         <div class="col-sm-8">
-            <h4>{{usr.name}} {{usr.age}} {{usr.email}} {{$index}}</h4>
+            <h4>{{usr.name}}, {{usr.age}}, {{usr.email}}</h4>
         </div>
-        <div class="col-sm-4" style="margin-top: 5px;">
+        <div class="col-sm-4" style="margin-top: 5px;" ng-show="isInReadMode(usr.id)">
             <div class="pull-right">
-                <button class="btn btn-warning btn-sm">
+                <button class="btn btn-warning btn-sm" ng-click="redirectEditUser(usr.id)">
                     Edit
                 </button>
-                <button class="btn btn-danger btn-sm">
+                <button class="btn btn-danger btn-sm" ng-click="startRemove(usr.id)">
                     Delete
+                </button>
+            </div>
+        </div>
+        <div class="col-sm-4" style="margin-top: 5px;" ng-show="isInRemoveMode(usr.id)">
+            <div class="pull-right">
+                <button class="btn btn-success btn-sm" ng-click="remove(usr.id)">
+                    Confirm
+                </button>
+                <button class="btn btn-danger btn-sm" ng-click="cancel()">
+                    Cancel
                 </button>
             </div>
         </div>

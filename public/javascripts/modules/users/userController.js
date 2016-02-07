@@ -1,7 +1,7 @@
 angular.module("users", [])
        .factory("usersService", UsersService)
        .controller("userController", UserController)
-       .constant("usersServiceUrl", "https://crud-lab.herokuapp.com/api/users");
+       .constant("usersServiceUrl", "http://localhost:9000/api/users");
 
 function UsersService($http, usersServiceUrl) {
   function get(param) {
@@ -10,6 +10,14 @@ function UsersService($http, usersServiceUrl) {
 
   function post(data) {
     return request("POST", null, data);
+  }
+
+  function put(param, data) {
+    return request("PUT", param, data);
+  }
+
+  function del(param) {
+    return request("DELETE", param);
   }
 
   function request(verb, param, data) {
@@ -27,6 +35,8 @@ function UsersService($http, usersServiceUrl) {
   function url(param) {
     if(param == null || !angular.isDefined(param)) {
       param = "";
+    } else {
+      param = "/" + param;
     }
     return usersServiceUrl + param;
   }
@@ -36,20 +46,38 @@ function UsersService($http, usersServiceUrl) {
       return get();
     },
 
+    getUser: function(id) {
+      return get(id);
+    },
+
     saveUser: function(user) {
       return post(user);
+    },
+
+    updateUser: function(id, user) {
+      return put(id, user);
+    },
+
+    deleteUser: function(userId) {
+      return del(userId);
     }
   }
 }
 
 function UserController($scope, $location, usersService) {
+    var selectedId = -1;
     var rings = [];
 
     $scope.redirectCreateUser = redirectCreateUser;
+    $scope.redirectEditUser = redirectEditUser;
     $scope.isBusy = isBusy;
     $scope.isLoading = isLoading;
     $scope.errorMessage = "";
     $scope.cancel = reset;
+    $scope.isInReadMode = isInReadMode;
+    $scope.isInRemoveMode = isInRemoveMode;
+    $scope.startRemove = startRemove;
+    $scope.remove = remove;
 
     $scope.users = [];
     getAllUsers();
@@ -73,6 +101,14 @@ function UserController($scope, $location, usersService) {
       return isBusy(-2);
     }
 
+    function isInReadMode(id) {
+      return selectedId < 0 || selectedId != id;
+    }
+
+    function isInRemoveMode(id) {
+      return selectedId == id && removeFlag;
+    }
+
     function complete(id) {
       var idx = rings.indexOf(id);
       if(idx < 0) {
@@ -90,6 +126,12 @@ function UserController($scope, $location, usersService) {
       $scope.errorMessage = "";
     }
 
+    function startRemove(id) {
+      reset();
+      selectedId = id;
+      removeFlag = true;
+    }
+
     function getAllUsers() {
         console.info("getAllUsers()");
         busy(-2);
@@ -102,9 +144,23 @@ function UserController($scope, $location, usersService) {
         reset();
     }
 
-    function redirectCreateUser() {
-        $location.path("/users/create");
-        return;
+    function remove(id) {
+      console.info("remove()");
+      usersService.deleteUser(id).success(function(users) {
+        getAllUsers();
+      }).error(function(errorInfo, status) {
+        console.error(errorInfo);
+      });
+      reset();
     }
 
+  function redirectCreateUser() {
+    $location.path("/users/create");
+    return;
+  }
+
+  function redirectEditUser(id) {
+    $location.path("/users/edit/" + id);
+    return;
+  }
 }
