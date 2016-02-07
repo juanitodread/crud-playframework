@@ -22,6 +22,7 @@ import play.api._
 import play.api.mvc._
 import org.slf4j.{LoggerFactory, Logger}
 import daos._
+import models._
 import play.api.libs.json._
 import models.JsonFormats._
 
@@ -30,6 +31,15 @@ class UserController extends Controller {
   private final val logger: Logger = LoggerFactory.getLogger(classOf[UserController])
 
   val userDao = new MemoryUserDao
+
+  def create() = Action(parse.json) { request =>
+    logger.info("create()")
+    logger.info(s"${request.body}")
+    request.body.validate[User].map {
+      user => userDao.save(user)
+      NoContent
+    }.getOrElse(BadRequest("invalid json"))
+  }
 
   def getAll() = Action {
     logger.info("getAll()")
