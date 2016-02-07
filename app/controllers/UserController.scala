@@ -32,6 +32,24 @@ class UserController extends Controller {
 
   val userDao = new MemoryUserDao
 
+  def getAll() = Action {
+    logger.info("getAll()")
+    val users = userDao.find
+    val jsonUsers = Json.toJson(users)
+    logger.info(jsonUsers.toString)
+    Ok(jsonUsers).withHeaders(
+      "access-control-allow-origin" -> "*"
+    )
+  }
+
+  def getUserById(id: String) = Action {
+    logger.info(s"getUserById($id)")
+    userDao.findById(id) match {
+      case Some(x) => Ok(Json.toJson(x))
+      case None => NotFound
+    }
+  }
+
   def create() = Action(parse.json) { request =>
     logger.info("create()")
     logger.info(s"${request.body}")
@@ -41,14 +59,19 @@ class UserController extends Controller {
     }.getOrElse(BadRequest("invalid json"))
   }
 
-  def getAll() = Action {
-    logger.info("getAll()")
-    val users = userDao.find
-    val jsonUsers = Json.toJson(users)
-    logger.info(jsonUsers.toString)
-    Ok(jsonUsers).withHeaders(
-      "access-control-allow-origin" -> "*"
-    )
+  def update(id: String) = Action(parse.json) { request =>
+    logger.info(s"update($id)")
+    logger.info(s"${request.body}")
+    request.body.validate[User].map {
+      user => userDao.update(id, user)
+      NoContent
+    }.getOrElse(BadRequest("invalid json"))
+  }
+
+  def delete(id: String) = Action {
+    logger.info( s"delete($id)" )
+    userDao.delete(id)
+    NoContent
   }
 
 }

@@ -1,7 +1,7 @@
 angular.module("users", [])
        .factory("usersService", UsersService)
        .controller("userController", UserController)
-       .constant("usersServiceUrl", "https://crud-lab.herokuapp.com/api/users");
+       .constant("usersServiceUrl", "http://localhost:9000/api/users");
 
 function UsersService($http, usersServiceUrl) {
   function get(param) {

@@ -24,7 +24,13 @@ import scala.collection.mutable.ListBuffer
 trait UserDao {
   def find(): List[User]
 
+  def findById(id: String): Option[User]
+
   def save(user: User): Unit
+
+  def update(id: String, user: User): Unit
+
+  def delete(id: String): Unit
 }
 
 class MemoryUserDao extends UserDao {
@@ -32,12 +38,25 @@ class MemoryUserDao extends UserDao {
     MemoryUserDao.Users.toList
   }
 
+  def findById(id: String): Option[User] = {
+    Some(MemoryUserDao.Users.filter(user => user.id == id).head)
+  }
+
   def save(user: User): Unit = {
     MemoryUserDao.Users += user
+  }
+
+  def update(id: String, user: User): Unit = {
+    val index = MemoryUserDao.Users.zipWithIndex.filter(_._1.id == id).map(_._2).head
+    MemoryUserDao.Users(index) = user
+  }
+
+  def delete(id: String): Unit = {
+    MemoryUserDao.Users = MemoryUserDao.Users.filter(user => user.id != id)
   }
 }
 
 object MemoryUserDao {
-  val Users = ListBuffer[User](User("1", "Juan", 29, "juan@mail.com"),
-                   User("2", "Antonio", 32, "antonio@mail.com"))
+  var Users = ListBuffer[User](User("1", "Juan", 29, "juan@mail.com"),
+                               User("2", "Antonio", 32, "antonio@mail.com"))
 }
