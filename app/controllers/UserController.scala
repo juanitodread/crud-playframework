@@ -60,10 +60,12 @@ class UserController extends Controller {
     request.body.validate[User].map {
       user => userDao.save(user)
       NoContent.withHeaders(
-        "access-control-allow-origin" -> "*"
+        "access-control-allow-origin" -> "*",
+        "access-control-allow-methods" -> "POST"
       )
     }.getOrElse(BadRequest("invalid json").withHeaders(
-      "access-control-allow-origin" -> "*"
+      "access-control-allow-origin" -> "*",
+      "access-control-allow-methods" -> "POST"
     ))
   }
 
@@ -73,10 +75,12 @@ class UserController extends Controller {
     request.body.validate[User].map {
       user => userDao.update(id, user)
       NoContent.withHeaders(
-        "access-control-allow-origin" -> "*"
+        "access-control-allow-origin" -> "*",
+        "access-control-allow-methods" -> "PUT"
       )
     }.getOrElse(BadRequest("invalid json").withHeaders(
-      "access-control-allow-origin" -> "*"
+      "access-control-allow-origin" -> "*",
+      "access-control-allow-methods" -> "PUT"
     ))
   }
 
@@ -84,7 +88,8 @@ class UserController extends Controller {
     logger.info( s"delete($id)" )
     userDao.delete(id)
     NoContent.withHeaders(
-      "access-control-allow-origin" -> "*"
+      "access-control-allow-origin" -> "*",
+      "access-control-allow-methods" -> "DELETE"
     )
   }
 

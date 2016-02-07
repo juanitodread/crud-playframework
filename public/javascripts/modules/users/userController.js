@@ -16,6 +16,9 @@ function UsersService($http, usersServiceUrl) {
     var req = {
       method: verb,
       url: url(param),
+      headers: {
+        "Access-Control-Allow-Origin": "*"
+      },
       data: data
     }
     return $http(req);
