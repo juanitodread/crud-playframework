@@ -45,8 +45,12 @@ class UserController extends Controller {
   def getUserById(id: String) = Action {
     logger.info(s"getUserById($id)")
     userDao.findById(id) match {
-      case Some(x) => Ok(Json.toJson(x))
-      case None => NotFound
+      case Some(x) => Ok(Json.toJson(x)).withHeaders(
+        "access-control-allow-origin" -> "*"
+      )
+      case None => NotFound.withHeaders(
+        "access-control-allow-origin" -> "*"
+      )
     }
   }
 
@@ -55,8 +59,12 @@ class UserController extends Controller {
     logger.info(s"${request.body}")
     request.body.validate[User].map {
       user => userDao.save(user)
-      NoContent
-    }.getOrElse(BadRequest("invalid json"))
+      NoContent.withHeaders(
+        "access-control-allow-origin" -> "*"
+      )
+    }.getOrElse(BadRequest("invalid json").withHeaders(
+      "access-control-allow-origin" -> "*"
+    ))
   }
 
   def update(id: String) = Action(parse.json) { request =>
@@ -64,14 +72,20 @@ class UserController extends Controller {
     logger.info(s"${request.body}")
     request.body.validate[User].map {
       user => userDao.update(id, user)
-      NoContent
-    }.getOrElse(BadRequest("invalid json"))
+      NoContent.withHeaders(
+        "access-control-allow-origin" -> "*"
+      )
+    }.getOrElse(BadRequest("invalid json").withHeaders(
+      "access-control-allow-origin" -> "*"
+    ))
   }
 
   def delete(id: String) = Action {
     logger.info( s"delete($id)" )
     userDao.delete(id)
-    NoContent
+    NoContent.withHeaders(
+      "access-control-allow-origin" -> "*"
+    )
   }
 
 }
