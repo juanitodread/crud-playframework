@@ -18,79 +18,103 @@
  */
 package controllers
 
+import javax.inject.Inject
+
+import scala.concurrent.Future
+
 import play.api._
 import play.api.mvc._
-import org.slf4j.{LoggerFactory, Logger}
+import play.api.libs.concurrent.Execution.Implicits.defaultContext
+
+import org.slf4j.{
+  LoggerFactory,
+  Logger
+}
+
 import daos._
 import models._
 import play.api.libs.json._
 import models.JsonFormats._
 
-class UserController extends Controller {
+import play.modules.reactivemongo.{
+  MongoController,
+  ReactiveMongoApi,
+  ReactiveMongoComponents
+}
+
+class UserController @Inject()(val reactiveMongoApi: ReactiveMongoApi)
+  extends Controller with MongoController with ReactiveMongoComponents {
 
   private final val logger: Logger = LoggerFactory.getLogger(classOf[UserController])
 
-  val userDao = new MemoryUserDao
+  val userDao = MongoUserDao(reactiveMongoApi)
 
-  def getAll() = Action {
+  def getAll() = Action.async {
     logger.info("getAll()")
-    val users = userDao.find
-    val jsonUsers = Json.toJson(users)
-    logger.info(jsonUsers.toString)
-    Ok(jsonUsers).withHeaders(
-      "access-control-allow-origin" -> "*"
-    )
+     val futureUserList: Future[List[User]] = userDao.find
+
+     futureUserList.map { users =>
+       Ok(Json.toJson(users)).withHeaders(
+         "access-control-allow-origin" -> "*"
+       )
+     }
   }
 
-  def getUserById(id: String) = Action {
+  def getUserById(id: String) = Action.async {
     logger.info(s"getUserById($id)")
-    userDao.findById(id) match {
-      case Some(x) => Ok(Json.toJson(x)).withHeaders(
+    userDao.findById(id).map(user => user match {
+      case Some(user) => Ok(Json.toJson(user)).withHeaders(
         "access-control-allow-origin" -> "*"
       )
-      case None => NotFound.withHeaders(
+      case None       => NotFound.withHeaders(
         "access-control-allow-origin" -> "*"
       )
-    }
+    })
   }
 
-  def create() = Action(parse.json) { request =>
+  def create() = Action.async(parse.json) { request =>
     logger.info("create()")
     logger.info(s"${request.body}")
-    request.body.validate[User].map {
-      user => userDao.save(user)
-      NoContent.withHeaders(
-        "access-control-allow-origin" -> "*",
-        "access-control-allow-methods" -> "POST"
-      )
-    }.getOrElse(BadRequest("invalid json").withHeaders(
+    request.body.validate[TransientUser].map {
+      user => userDao.save(user).map { lastError =>
+        logger.debug(s"User created with LastError: $lastError")
+        Created.withHeaders(
+          "access-control-allow-origin" -> "*",
+          "access-control-allow-methods" -> "POST"
+        )
+      }
+    }.getOrElse(Future.successful(BadRequest("invalid json").withHeaders(
       "access-control-allow-origin" -> "*",
       "access-control-allow-methods" -> "POST"
-    ))
+    )))
   }
 
-  def update(id: String) = Action(parse.json) { request =>
+  def update(id: String) = Action.async(parse.json) { request =>
     logger.info(s"update($id)")
-    logger.info(s"${request.body}")
-    request.body.validate[User].map {
-      user => userDao.update(id, user)
-      NoContent.withHeaders(
-        "access-control-allow-origin" -> "*",
-        "access-control-allow-methods" -> "PUT"
-      )
-    }.getOrElse(BadRequest("invalid json").withHeaders(
+    logger.debug(s"${request.body}")
+    request.body.validate[TransientUser].map {
+      user => userDao.update(id, user).map { lastError =>
+        logger.debug(s"User updated with LastError: $lastError")
+        Ok.withHeaders(
+          "access-control-allow-origin" -> "*",
+          "access-control-allow-methods" -> "PUT"
+        )
+      }
+    }.getOrElse(Future.successful(BadRequest("invalid json").withHeaders(
       "access-control-allow-origin" -> "*",
       "access-control-allow-methods" -> "PUT"
-    ))
+    )))
   }
 
-  def delete(id: String) = Action {
+  def delete(id: String) = Action.async {
     logger.info( s"delete($id)" )
-    userDao.delete(id)
-    NoContent.withHeaders(
-      "access-control-allow-origin" -> "*",
-      "access-control-allow-methods" -> "DELETE"
-    )
+    userDao.delete(id).map { lastError =>
+      logger.debug(s"User updated with LastError: $lastError")
+      Ok.withHeaders(
+        "access-control-allow-origin" -> "*",
+        "access-control-allow-methods" -> "DELETE"
+      )
+    }
   }
 
 }

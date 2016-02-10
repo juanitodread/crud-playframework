@@ -18,10 +18,21 @@
  */
 package models
 
-case class User(id: String, name: String, age: Int, email: String)
+case class TransientUser(name: String,
+  age: Int,
+  email: String)
+
+case class User(_id: ObjectId,
+  name: String,
+  age: Int,
+  email: String)
+
+case class ObjectId($oid: String)
 
 object JsonFormats {
   import play.api.libs.json.Json
 
+  implicit val objectIdFormat = Json.format[ObjectId]
   implicit val userFormat = Json.format[User]
+  implicit val transientUserFormat = Json.format[TransientUser]
 }
