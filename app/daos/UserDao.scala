@@ -99,6 +99,8 @@ class MemoryUserDao {
 }
 
 object MemoryUserDao {
-  var Users = ListBuffer[User](User(ObjectId("1"), "Juan", 29, "juan@mail.com"),
-    User(ObjectId("2"), "Antonio", 32, "antonio@mail.com"))
+  var Users = ListBuffer[User](
+    User(ObjectId("1"), "Juan", 29, "juan@mail.com"),
+    User(ObjectId("2"), "Antonio", 32, "antonio@mail.com")
+  )
 }

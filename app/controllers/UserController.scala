@@ -42,8 +42,8 @@ import play.modules.reactivemongo.{
   ReactiveMongoComponents
 }
 
-class UserController @Inject()(val reactiveMongoApi: ReactiveMongoApi)
-  extends Controller with MongoController with ReactiveMongoComponents {
+class UserController @Inject() (val reactiveMongoApi: ReactiveMongoApi)
+    extends Controller with MongoController with ReactiveMongoComponents {
 
   private final val logger: Logger = LoggerFactory.getLogger(classOf[UserController])
 
@@ -51,18 +51,18 @@ class UserController @Inject()(val reactiveMongoApi: ReactiveMongoApi)
 
   def getAll() = Action.async {
     logger.info("getAll()")
-     val futureUserList: Future[List[User]] = userDao.find
+    val futureUserList: Future[List[User]] = userDao.find
 
-     futureUserList.map { users =>
-       Ok(Json.toJson(users))
-     }
+    futureUserList.map { users =>
+      Ok(Json.toJson(users))
+    }
   }
 
   def getUserById(id: String) = Action.async {
     logger.info(s"getUserById($id)")
     userDao.findById(id).map(user => user match {
       case Some(user) => Ok(Json.toJson(user))
-      case None       => NotFound
+      case None => NotFound
     })
   }
 
@@ -70,10 +70,11 @@ class UserController @Inject()(val reactiveMongoApi: ReactiveMongoApi)
     logger.info("create()")
     logger.info(s"${request.body}")
     request.body.validate[TransientUser].map {
-      user => userDao.save(user).map { lastError =>
-        logger.debug(s"User created with LastError: $lastError")
-        Created
-      }
+      user =>
+        userDao.save(user).map { lastError =>
+          logger.debug(s"User created with LastError: $lastError")
+          Created
+        }
     }.getOrElse(Future.successful(BadRequest("invalid json")))
   }
 
@@ -81,15 +82,16 @@ class UserController @Inject()(val reactiveMongoApi: ReactiveMongoApi)
     logger.info(s"update($id)")
     logger.debug(s"${request.body}")
     request.body.validate[TransientUser].map {
-      user => userDao.update(id, user).map { lastError =>
-        logger.debug(s"User updated with LastError: $lastError")
-        Ok
-      }
+      user =>
+        userDao.update(id, user).map { lastError =>
+          logger.debug(s"User updated with LastError: $lastError")
+          Ok
+        }
     }.getOrElse(Future.successful(BadRequest("invalid json")))
   }
 
   def delete(id: String) = Action.async {
-    logger.info( s"delete($id)" )
+    logger.info(s"delete($id)")
     userDao.delete(id).map { lastError =>
       logger.debug(s"User updated with LastError: $lastError")
       Ok

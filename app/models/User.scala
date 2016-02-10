@@ -18,14 +18,18 @@
  */
 package models
 
-case class TransientUser(name: String,
-  age: Int,
-  email: String)
-
-case class User(_id: ObjectId,
+case class TransientUser(
   name: String,
   age: Int,
-  email: String)
+  email: String
+)
+
+case class User(
+  _id: ObjectId,
+  name: String,
+  age: Int,
+  email: String
+)
 
 case class ObjectId($oid: String)
 
