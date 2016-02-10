@@ -18,7 +18,7 @@ function UpdateUserController($scope, $location, $routeParams, usersService) {
     console.info("updateUser()");
     var newUser = angular.copy($scope.user);
     console.info(newUser);
-    usersService.updateUser($scope.user.id, newUser).success(function() {
+    usersService.updateUser($scope.user._id.$oid, newUser).success(function() {
       $location.path("/users");
       return;
     });

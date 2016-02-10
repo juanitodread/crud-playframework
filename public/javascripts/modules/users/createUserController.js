@@ -8,7 +8,6 @@ function CreateUserController($scope, $location, usersService) {
     function createUser() {
         console.info("createUser()");
         var newUser = angular.copy($scope.cuc.user);
-        newUser.id = "" + new Date().getTime();
         console.info(newUser);
         usersService.saveUser(newUser).success(function() {
           $location.path("/users");

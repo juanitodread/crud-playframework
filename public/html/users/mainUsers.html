@@ -27,19 +27,19 @@
         <div class="col-sm-8">
             <h4>{{usr.name}}, {{usr.age}}, {{usr.email}}</h4>
         </div>
-        <div class="col-sm-4" style="margin-top: 5px;" ng-show="isInReadMode(usr.id)">
+        <div class="col-sm-4" style="margin-top: 5px;" ng-show="isInReadMode(usr._id.$oid)">
             <div class="pull-right">
-                <button class="btn btn-warning btn-sm" ng-click="redirectEditUser(usr.id)">
+                <button class="btn btn-warning btn-sm" ng-click="redirectEditUser(usr._id.$oid)">
                     Edit
                 </button>
-                <button class="btn btn-danger btn-sm" ng-click="startRemove(usr.id)">
+                <button class="btn btn-danger btn-sm" ng-click="startRemove(usr._id.$oid)">
                     Delete
                 </button>
             </div>
         </div>
-        <div class="col-sm-4" style="margin-top: 5px;" ng-show="isInRemoveMode(usr.id)">
+        <div class="col-sm-4" style="margin-top: 5px;" ng-show="isInRemoveMode(usr._id.$oid)">
             <div class="pull-right">
-                <button class="btn btn-success btn-sm" ng-click="remove(usr.id)">
+                <button class="btn btn-success btn-sm" ng-click="remove(usr._id.$oid)">
                     Confirm
                 </button>
                 <button class="btn btn-danger btn-sm" ng-click="cancel()">
