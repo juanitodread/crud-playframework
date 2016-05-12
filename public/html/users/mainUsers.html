@@ -25,7 +25,7 @@
     <div class="row" ng-repeat="usr in users | filter:seachUser"
          ng-class="{oddRow: $index % 2 == 0}"> <!-- add each user here  repeat for each user-->
         <div class="col-sm-8">
-            <h4>{{usr.name}}, {{usr.age}}, {{usr.email}}</h4>
+            <h4>{{usr.name}} | {{usr.age}} | {{usr.email}} | <span ng-class="{'label label-success': usr.state == 'Enabled', 'label label-danger': usr.state == 'Disabled'}">{{usr.state}}</span></h4>
         </div>
         <div class="col-sm-4" style="margin-top: 5px;" ng-show="isInReadMode(usr._id.$oid)">
             <div class="pull-right">
