@@ -18,25 +18,68 @@
  */
 package models
 
+import play.api.libs.json.Writes
+import play.api.libs.json.OWrites
+import play.api.libs.json.Reads
+import play.api.libs.json.JsPath
+import play.api.libs.functional.syntax._
+
 case class TransientUser(
   name: String,
   age: Int,
-  email: String
+  email: String,
+  state: UserState.Value
 )
 
 case class User(
   _id: ObjectId,
   name: String,
   age: Int,
-  email: String
+  email: String,
+  state: UserState.Value
 )
 
 case class ObjectId($oid: String)
+
+object UserState extends Enumeration {
+  val ENABLED = Value(1, "Enabled")
+  val DISABLED = Value(2, "Disabled")
+}
 
 object JsonFormats {
   import play.api.libs.json.Json
 
   implicit val objectIdFormat = Json.format[ObjectId]
-  implicit val userFormat = Json.format[User]
-  implicit val transientUserFormat = Json.format[TransientUser]
+
+  // writes
+  implicit val UserWrites: OWrites[User] = (
+    (JsPath \ "_id").write[ObjectId] and
+    (JsPath \ "name").write[String] and
+    (JsPath \ "age").write[Int] and
+    (JsPath \ "email").write[String] and
+    (JsPath \ "state").write[UserState.Value](Writes.enumNameWrites)
+  )(unlift(User.unapply))
+
+  implicit val transientUserWrites: OWrites[TransientUser] = (
+    (JsPath \ "name").write[String] and
+    (JsPath \ "age").write[Int] and
+    (JsPath \ "email").write[String] and
+    (JsPath \ "state").write[UserState.Value](Writes.enumNameWrites)
+  )(unlift(TransientUser.unapply))
+
+  // reads
+  implicit val userReads: Reads[User] = (
+    (JsPath \ "_id").read[ObjectId] and
+    (JsPath \ "name").read[String] and
+    (JsPath \ "age").read[Int] and
+    (JsPath \ "email").read[String] and
+    (JsPath \ "state").read(Reads.enumNameReads(UserState))
+  )(User.apply _)
+
+  implicit val transientReads: Reads[TransientUser] = (
+    (JsPath \ "name").read[String] and
+    (JsPath \ "age").read[Int] and
+    (JsPath \ "email").read[String] and
+    (JsPath \ "state").read(Reads.enumNameReads(UserState))
+  )(TransientUser.apply _)
 }

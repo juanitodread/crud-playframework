@@ -76,31 +76,31 @@ object MongoUserDao {
 }
 
 class MemoryUserDao {
-  def find(): List[User] = {
+  def find(): Future[List[User]] = Future {
     MemoryUserDao.Users.toList
   }
 
-  def findById(id: String): Option[User] = {
+  def findById(id: String): Future[Option[User]] = Future {
     Some(MemoryUserDao.Users.filter(user => user._id.$oid == id).head)
   }
 
-  def save(user: User): Unit = {
+  def save(user: User): Future[Unit] = Future {
     MemoryUserDao.Users += user
   }
 
-  def update(id: String, user: User): Unit = {
+  def update(id: String, user: User): Future[Unit] = Future {
     val index = MemoryUserDao.Users.zipWithIndex.filter(_._1._id.$oid == id).map(_._2).head
     MemoryUserDao.Users(index) = user
   }
 
-  def delete(id: String): Unit = {
+  def delete(id: String): Future[Unit] = Future {
     MemoryUserDao.Users = MemoryUserDao.Users.filter(user => user._id.$oid != id)
   }
 }
 
 object MemoryUserDao {
   var Users = ListBuffer[User](
-    User(ObjectId("1"), "Juan", 29, "juan@mail.com"),
-    User(ObjectId("2"), "Antonio", 32, "antonio@mail.com")
+    User(ObjectId("1"), "Juan", 29, "juan@mail.com", UserState.ENABLED),
+    User(ObjectId("2"), "Antonio", 32, "antonio@mail.com", UserState.ENABLED)
   )
 }
